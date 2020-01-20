@@ -1,0 +1,89 @@
+% This template is public domain.
+\documentclass{ltugboat}
+
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{ifpdf}
+\ifpdf
+\usepackage[breaklinks,hidelinks,pdfa]{hyperref}
+\else
+\usepackage{url}
+\fi
+
+%%% Start of metadata %%%
+\newcommand{\docstrip}{DocStrip}
+\title{Using \docstrip{} for Multiple Document Variants}
+
+% repeat info for each author.
+\author{Matthew Leingang}
+\address{New York University \\ 251 Mercer Street \\ New York, NY 10012\\ USA}
+\netaddress{leingang@nyu.edu}
+\personalURL{https://cims.nyu.edu/~leingang}
+
+%%% End of metadata %%%
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This is an example article for \TUB{}.
+Please write an abstract.
+\end{abstract}
+
+\section{Introduction}
+
+This is an example article for \TUB, linked from
+\url{https://tug.org/TUGboat/location.html}.
+
+We recommend the \texttt{graphicx} package for image inclusions, and the
+\texttt{hyperref} package if active urls are desired (in the \acro{PDF}
+output).  Nowadays \TUB\ is produced using \acro{PDF} files exclusively.
+
+The \texttt{ltugboat} class provides these abbreviations, among many others:
+
+% verbatim blocks are often better in \small
+\begin{verbatim}[\small]
+\AllTeX \AMS \AmS \AmSLaTeX \AmSTeX \aw \AW
+\BibTeX \Cplusplus \CTAN
+\DTD \DVI
+\HTML \LaTeXe
+\MacOSX \MathML \MF \MFB
+\plain \PS
+\TANGLE \TB \TP
+\TUB \TUG \tug
+\UNIX \WEB \WEAVE
+\XeLaTeX \XeTeX \XML
+
+\, \bull \Dash \hyph \slash
+
+\acro{FRED} -> {\small[er] fred}  % please use!
+\cs{fred}   -> \fred
+\meta{fred} -> <fred>
+\nth{n}     -> 1st, 2nd, ...
+\booktitle{Book of Fred}
+\end{verbatim}
+
+For references to other issues of \TUB, please use the format
+\textsl{volno:issno}, e.g., ``\TUB\ 32:1'' for volume~32, number~1.
+
+This file is just a template.  The \TUB\ style documentation is the
+\texttt{ltubguid} document at \url{https://ctan.org/pkg/tugboat}.  (For
+\CTAN\ references, where sensible we recommend that form of url, with
+\texttt{/pkg/}; or, if you need to refer to a specific file location,
+\texttt{http://mirror.ctan.org/\textsl{path}}.)
+
+We recommend using \BibTeX (but don't require it).  The \texttt{biblio}
+package on \CTAN, \url{https://ctan.org/pkg/biblio}, provides files
+\texttt{tugboat.bib} with an essentially complete bibliography of \TUB,
+and \texttt{texbook3.bib} with many \TeX-related citations.  Both of these,
+and many more, should also already be in your \TeX\ distribution.
+
+Email \verb|tugboat@tug.org| with any problems or questions.
+
+\bibliographystyle{tugboat}% or plain if you don't have tugboat.bst
+\nocite{book-minimal}      % just making the bibliography non-empty
+\bibliography{xampl}       % xampl.bib comes with BibTeX
+
+\makesignature
+\end{document}
