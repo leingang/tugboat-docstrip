@@ -1,29 +1,39 @@
-% This template is public domain.
 \documentclass{ltugboat}
-
-\usepackage{microtype}
-\usepackage{graphicx}
-\usepackage{ifpdf}
-\ifpdf
-\usepackage[breaklinks,hidelinks,pdfa]{hyperref}
-\else
-\usepackage{url}
-\fi
-
-\newcommand{\cls}[1]{\texttt{#1}}
-\newcommand{\pkg}[1]{\texttt{#1}}
-\newcommand{\docstrip}{\textsf{DocStrip}}
-
 %%% Start of metadata %%%
-\title{Using \docstrip{} for Multiple Document Variants}
-
-% repeat info for each author.
+\AtBeginDocument{
+    \title{Using \docstrip{} for Multiple Document Variants}
+}
 \author{Matthew Leingang}
 \address{New York University \\ 251 Mercer Street \\ New York, NY 10012\\ USA}
 \netaddress{leingang@nyu.edu}
 \personalURL{https://cims.nyu.edu/~leingang/}
-
 %%% End of metadata %%%
+
+\usepackage{microtype}
+\usepackage{graphicx}
+
+\usepackage{listings}
+\lstset{
+    columns=flexible,
+    language=[LaTeX]TeX,
+    frame=tb,
+    numbers=left,
+    basicstyle=\small\ttfamily}
+
+
+\newcommand{\cls}[1]{\texttt{#1}} % class name
+\newcommand{\pkg}[1]{\texttt{#1}} % package name
+\renewcommand{\env}[1]{\texttt{#1}}% environment name (no \begin as in original)
+\newcommand{\fn}[1]{\texttt{#1}}  % file name
+\newcommand{\opt}[1]{\texttt{#1}} % DocStrip option
+
+\usepackage{ifpdf}
+\ifpdf
+  \usepackage[breaklinks,hidelinks,pdfa]{hyperref}
+\else
+  \usepackage{url}
+\fi
+\newcommand{\docstrip}{\texorpdfstring{\textsf{DocStrip}}{DocStrip}}
 
 \begin{document}
 
@@ -52,23 +62,276 @@ materials in several different forms.  For example:
     published after the assignment has been graded.
 \end{itemize}
 
-Over the years I have developed a workflow for writing these bundles of
+Over the years I have developed a workflow for writing these ``bundles'' of
 documents in the same file, using the \LaTeX{} \docstrip{} utility.  In this
 article I will introduce the reader to \docstrip{} and explain how I use it.
 
 \section{The \docstrip{} utility}
 
+\docstrip{} \cite{docstrip} was originally designed as a literate programming method.  \LaTeX{}
+package and class authors use it to write documentation for their code in the same
+file as the implementation, within commnted lines.  \docstrip{} would
+\emph{strip} out the comment lines and use them to produce \emph{doc}umentation.
+The slimmer package and class files would be installed to save compile time.  In
+subsequent versions \docstrip{} developed the ability to write lines to several
+different files in one batch, through the use of options.
+
+\begin{lstlisting}[float,
+    numbers=none,
+    caption={A minimal \docstrip{} batch file},
+    label={lst-minbatch}
+]
+    \input docstrip.tex 
+    \generate{\file{foo.sty}
+              {\from{foo.dtx}{package}}}
+    \endbatchfile
+\end{lstlisting}
+
+\docstrip{} batches are programmed in a \TeX file as in
+Listing~\ref{lst-minbatch}.  The \cs{input} line loads the \docstrip{} code.
+The \cs{generate} line instructs, effectively, ``Read \fn{foo.dtx} and write
+\fn{foo.sty}, setting the \opt{package} option.''
+
+When generating files, \docstrip{} ignores all lines beginning only with a
+single \verb!%!.  Non-commented lines are written to all destination files.
+Lines beginning with a \emph{guard} will be written to the destination file
+depending on the options set.  Each guard begins with a \verb!%! and contains a
+boolean expression enclosed by angle brackets.
+
+Now putting guards at the start of every line would be cumbersome to type.  So
+guard modifiers are used to delimit blocks of code with the same guard.  Any
+expression preceded by `\verb|*|' will apply the indicated guard to every line that
+follows, until the identical expression is encountered with the `\verb|/|' modifier.
+This gives an almost \acro{HTML}-like layer to the docstrip source file, where blocks
+of code between \verb!%<*bar>! and \verb!%</bar>! will be written to any file
+generated with the \opt{bar} option.
+
+Remarkably, a \docstrip{} batch declaration can be put \emph{at the beginning}
+of a \docstrip{} source file.  Running \TeX{} on the file will instruct \TeX{}
+to parse the file a second time, this time writing the individual destination
+files.  In this way, \docstrip{} files can be configured to ``self-extract.''
+
 \section{Example: A problem set with answer template and solutions}
+\label{sec-exam}
+
+As a small but not quite minimal example, let's consider a \docstrip{} file
+called \fn{hw.dtx}.  The entire file can be viewed online as part of the github
+repository for this article: \url{https://github.com/leingang/tugboat-dtxvar}.
+
+\subsection{Batch header}
+
+Listing~\ref{lst-dtx-hdr} shows the beginning of \fn{hw.dtx}, which loads
+\fn{docstrip.tex} and declares the \cs{generate} batch.  It's surrounded with
+\verb|driver| guards.  Since no generated file sets the \verb|driver| option,
+this block is not written to \emph{any} file.
+\lstinputlisting[
+    firstline=1,lastline=11,
+    float=*,
+    label={lst-dtx-hdr},
+    caption={The header block of \fn{hw.dtx}
+    declaring \cs{generate} batch}
+]{hw.dtx}
+
+We generate four files:
+
+\begin{itemize}
+    \item \fn{hw.qns.tex}, which sets the \opt{questions} option.  This document
+    will be the prepared questions sheet for the instructor to distribute to the
+    students.
+    \item \fn{hw.ans.tex}, which sets the \opt{questions} and \opt{answers}
+    options.  This is intended to be distributed to students as a template to
+    fill in their answers.
+    \item \fn{hw.sol.tex}, which sets the \opt{questions} and \opt{solutions}
+    options.  This document can be published once the assignment is collected
+    and graded.
+    \item \fn{hw.bib}, which only sets the \opt{bib} option.  This is a
+    \BibTeX{} file that can be included in any of the \LaTeX{} files.
+\end{itemize}
+
+Lines 12–89 of \fn{hw.dtx} are delimited with \verb|<questions>| guards and
+enclose an entire \LaTeX{} document from \verb|\documentclass{article}| to
+\verb|\end{document}|.  Lines 90 and onward are delimited with \verb|<bib>| and
+comprise the complete \fn{hw.bib} file.
+
+\subsection{Using guards to conditionally include text}
+
+Listing~\ref{lst-dtx-qna} shows an excerpt of \fn{hw.dtx} that declares a
+question.   Notice that the \env{hint} environment is surrounded by a guard with
+a compound boolean expression \verb|<!answers&!solutions>|.  The effect is that
+the  \env{hint} is shown when the \opt{questions} option is selected, but
+\opt{answers} and \opt{solutions} are \emph{not} selected.  That is, only in the
+\fn{hw.qns.tex} file.  The resulting block that is written to the questions file
+is shown in Listing~\ref{lst-tex-qns}.
+
+\lstinputlisting[
+    firstline=61,lastline=83,firstnumber=61,
+    float=*,label={lst-dtx-qna},caption={An excerpt of \fn{hw.dtx} declaring a question}
+]{hw.dtx}
+\lstinputlisting[
+    firstline=61,lastline=67,firstnumber=61,
+    float=*,label={lst-tex-qns},caption={The generated block in \fn{hw.qns.tex}}
+]{hw.qns.tex}
+
+Comment lines that begin with a single \verb|%| are stripped from the input and
+do not get printed to any output file.  But comment lines beginning with
+\emph{two} \verb|%| characters remain.  So the comment on line 71 of \fn{hw.dtx}
+is retained in the \fn{hw.ans.tex} file (Listing~\ref{lst-tex-ans}).  It is a
+note to the student where to write their answer.  Finally, the \env{solution}
+environment and subsequent commentary paragraph are written to the
+\fn{hw.sol.tex} file (Listing~\ref{lst-tex-sol}).
+
+\lstinputlisting[
+    firstline=58,lastline=64,firstnumber=50,
+    float=*,label={lst-tex-ans},caption={The generated block in \fn{hw.ans.tex}}
+]{hw.ans.tex}
+\lstinputlisting[
+    firstline=57,lastline=67,firstnumber=57,
+    float=*,label={lst-tex-sol},caption={The generated block in \fn{hw.sol.tex}}
+]{hw.sol.tex}
+
+\subsection{Using guards to conditionally define environments}
+
+The implementation of the environments \env{question}, \env{answer}, \env{hint},
+and \env{solutions} have to be set up in the preambles of the generated \LaTeX{}
+files (or in packages used by them).  But guards can be used in the preambles
+too.  In this way, we can conditionally style the document too.  
+
+For instance, I prefer that the question text be upright in the questions file
+and italicized in the answers/solutions file.  This is accomplished in
+Listing~\ref{lst-dtx-amsthm}.  Line~34 is written to the answers and solutions
+file, and overrides line~33.  The preamble of the questions file defines
+\env{question} under the \verb|definition| theorem style, with bold header and
+upright body font.  But in the answers and solutions file, the \verb|plain|
+theorem style is in force, so \env{question} sets its body in italic.
+
+\lstinputlisting[
+    firstline=31,lastline=35,firstnumber=31,
+    float=*,label={lst-dtx-amsthm},
+    caption={%
+        An excerpt of \fn{hw.dtx} showing conditional styling of the \env{question}
+        environment%
+    }
+]{hw.dtx}
+
+\subsection{Advanced tricks}
+
+If you look in the full \fn{hw.dtx} file online, you'll see a few more automatic
+variations with \docstrip:
+
+\begin{itemize}
+    \item The document title is set in \fn{hw.qns.tex}.  In \fn{hw.ans.tex}, the
+    text \verb|Answers to | is prepended to the title (using the \cs{preto} command
+    from the \pkg{etoolbox} package).  In \fn{hw.sol.tex}, the phrase
+    \verb|Solutions to | is prepended.  In this way, the original title only needs
+    to be put in one place.
+
+    \item The document author is set differently in the different document
+    variants. In \fn{hw.qns.tex} and \fn{hw.sol.tex}, the author is the
+    professor.  In \fn{hw.ans.tex}, the author is set to a generic student name,
+    and a \cs{LaTeXWarning} is used to remind the student to change the generic
+    name to their own name.
+\end{itemize}
 
 \section{Comparing alternatives}
 
+The problem of ``document options'' has been encountered by users before, for
+instance on the StackExchange nextwork. 
+\cite{TSE-docopts} 
+\cite{TSE-makefile}
+\cite{SO-texclargs}
+Let's consider some of the alternatives in the context of the example use case
+from Section~\ref{sec-exam}.
+
+\subsection{Separate files}
+
+In this strawman workflow, separate, nearly identical files are kept
+side-by-side.  Any correction (to a problem, for instance) requires three files
+be updated.  Further, copying a question to another assignment requires copying
+from three different files to three different files.  This setup is ripe for
+inconsistency and headache.
+
+\subsection{Option setting in pure \texorpdfstring{\TeX}{TeX}}
+
+In this workflow, certain \LaTeX{} booleans are defined and set, and code is
+conditionally executed depending on those booleans.  The booleans can be set by
+adding \TeX{} code on the command line as optional arguments to the executable
+(e.g., \verb|pdflatex|).  Or, a shell file can be created which sets options,
+then inputs a common master file.
+
+When options are set within the document, or on the command line, the
+\cs{jobname} is the same independent of the options set.  In our homework
+example, this would mean the problems file and and solutions file would both end
+up named \fn{hw.pdf}.  Not only does this the mean that the problem set and
+solutions \acro{PDF}s cannot inhabit the same directory at the same time, one
+can be mistaken for another.  Imagine the poor professor distributing what he
+thought was the questions-only \acro{PDF}, only to realize that he had instead
+shared all the solutions!
+
+With shell files, the \cs{jobname} is different for each document variant,
+avoiding the possibility of such a mistake.  But each bundle of documents
+requires now creating several files: one master, and one shell file for each
+variant.  A Makefile could automate creation of the shell files, but it's still
+a separate file.
+
+Also, in the context of a homework assignment, none of these methods allows
+the distribution of an answer template.  If the solutions are in the master
+\TeX{} file, and conditonally kept or discarded depending on options, they
+remain in the source file no matter what.  An answer template with solutions
+hidden in the source file defeats the purpose of a homework assignment.
+
+\subsection{Symlinks}
+
+In this workflow, a single \TeX{} file is created, and each variant document is
+a symbolic link to the original file with a different file name.  Editing one
+``file'' effects the contents referenced by the file and all of its symlinks.
+But the \cs{jobname} is determined by the file name, so it can be tested in
+order to conditionally execute certain code.
+
+This avoids the colliding output file issue of command-line arguments, and is
+more lightweight than shell files.  A new variant just requires a new symlink.
+It has the same disadvantages of the master-plus-shell files workflow, too. Code
+cannot be stripped out of the master file for a template, only gobbled and
+discarded.  Also, symbolic links require a certain level of comfort with the
+operating system in use.
+
+The \docstrip{} method described here is operating system independent.  It is
+secure in that each document variant gets a distinct \cs{jobname} and output
+file name.  It is lightweight in that only one \docstrip{} file needs to be
+created for every bundle of documents needed, and no programming other than \TeX
+is necessary.
+
+\subsection{Disadvantages of the \docstrip{} method}
+
+One drawback of this method is that it requires an extra \TeX{} run.  First, the
+\docstrip{} file is compiled, extracting the various \TeX{} files.  Then each of
+them must be compiled.  A bit of programming can automate this process (as well
+as decide when certain files don't need to be recompiled), as we'll describe in
+the next section.  
+
+Another, more uncomfortable drawback is that \TeX{} errors are only discovered
+when the derived \TeX{} are compiled.  The line numbers reported by \TeX{} at
+the time of the error are different from the line numbers in the \docstrip{} file.
+So diagnosing errors needs to be done without navigating to specific line
+numbers.  Rather, the token list before the error can be used for a search string.
+
+Finally, errors in the first run of \TeX{} (when \docstrip{} is extracting) can
+arise from unbalanced guard modifiers, e.g., a \verb|%<*solutions>| line with no
+closing \verb|%</solutions>|.  These are hard to isolate since \docstrip{} does
+not log its processing with much context, and the error isn't discovered until
+the end of the file is reached..  I have been able to find these through a
+combination of reversing my steps, and selectively commenting out blocks.
+
 \section{Automation}
+
 
 \section{Conclusion}
 
-\bibliographystyle{tugboat}% or plain if you don't have tugboat.bst
-\nocite{book-minimal}      % just making the bibliography non-empty
-\bibliography{xampl}       % xampl.bib comes with BibTeX
+I will continue to maintain and update the github repository referenced above.
+If you would like to try this method, and find that additional documentation
+would be useful, I will be happy to include it.
+
+\bibliographystyle{tugboat}
+\bibliography{dtxvar}
 
 \makesignature
 \end{document}

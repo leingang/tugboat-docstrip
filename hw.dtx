@@ -1,0 +1,104 @@
+%<*driver>
+\input docstrip.tex
+\askforoverwritefalse
+\generate{
+    \file{\jobname.qns.tex}{\from{\jobname.dtx}{questions}}
+    \file{\jobname.ans.tex}{\from{\jobname.dtx}{questions,answers}}
+    \file{\jobname.sol.tex}{\from{\jobname.dtx}{questions,solutions}}
+    \file{\jobname.bib}{\from{\jobname.dtx}{bib}}
+}
+\endbatchfile
+%</driver>
+%<*questions>
+\documentclass{article}
+%% These lines describe some document metadata.
+\title{Homework Assignment}
+\usepackage{etoolbox}
+%<answers>\makeatletter\preto{\@title}{Answers to }\makeatother
+%<solutions>\makeatletter\preto{\@title}{Solutions to }\makeatother
+\author{%
+%<!answers>    Prof. Uyn
+%<*answers>
+\GenericWarning{}{LaTeX Warning: Please change ``Sally Student'' to your name}% Delete this line when you have done this
+    Sally Student
+%</answers>
+\\  Discrete Mathematics
+}
+\date{due February 30, 2020}
+
+
+%% These lines set up the question, answer, and solution environments.
+\usepackage{amsthm}
+\usepackage{amssymb}
+\theoremstyle{definition}
+%<answers|solutions>\theoremstyle{plain}
+\newtheorem{question}{Question}
+\theoremstyle{remark}
+\newtheorem*{hint}{Hint}
+
+\newenvironment{answer}[1][Answer]
+    {\begin{proof}[#1]\renewcommand\qedsymbol{$\vartriangle$}}
+    {\end{proof}}
+\newenvironment{solution}[1][Solution]
+    {\begin{proof}[#1]\renewcommand\qedsymbol{$\blacktriangle$}}
+    {\end{proof}}
+
+\usepackage{amsmath}
+
+\usepackage{hyperref}
+\begin{document}
+\maketitle
+
+%<*!answers&!solutions>
+\section*{Reading and Practice}
+
+Read sections 6--9 of \cite{Scheinerman}.     
+
+\section*{Assigned Problems}
+
+%</!answers&!solutions>
+
+\begin{question}
+    \cite[Exercise 6.6]{Scheinerman}.
+    Disprove: if $p$ is prime, then $2^p-1$ is also prime.
+\end{question}
+%<*!answers&!solutions>
+\begin{hint}
+    All you need is one counterexample.  Guess and check, and be persistent.
+\end{hint}
+%</!answers&!solutions>
+%<*answers>
+%% Student: put your answer between the next two lines.
+\begin{answer}
+\end{answer}
+%</answers>
+%<*solutions>
+\begin{solution}
+    Let $p=11$.  Then $p$ is prime.  But $2^p-1 = 2^{11}-1 = 2047 = 23 \times 89$.
+    So the statement is false.
+\end{solution} 
+A prime number that is equal to $2^n-1$ for some $n$ is called a \emph{Mersenne
+Prime}.  Examples of Mersenne primes are $3 = 2^2 - 1$ and $127 = 2^7-1$.  It is
+unknown whether the number of Mersenne primes is finite!  
+%</solutions>
+
+\bibliographystyle{alpha}
+\bibliography{hw}
+
+\end{document}
+%</questions>
+%<*bib>
+@book{Scheinerman,
+	Address = {Belmont, CA},
+	Author = {Scheinerman, Edward R},
+	Edition = {2nd},
+	Publisher = {Thomson Brooks/Cole},
+	Title = {{Mathematics: a Discrete Introduction}},
+    Year = {2005}}
+    
+@misc{MP,
+    title = {Mersenne prime},
+    author = {Wikipedia},
+    howpublished = {\url{https://en.wikipedia.org/wiki/Mersenne_prime}}
+}
+%</bib>
