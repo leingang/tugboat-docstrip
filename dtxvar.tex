@@ -323,6 +323,48 @@ combination of reversing my steps, and selectively commenting out blocks.
 
 \section{Automation}
 
+To recap, this workflow requires editing a \docstrip{} file marked up as in
+Section~\ref{sec-exam}, compiling that \docstrip{} file to generate separate
+\TeX{} files, then compiling the desired \TeX{} file.  The first run can be done
+in any \TeX engine, because the batch declaration header (and \fn{docstrip.tex})
+is in core \TeX{}.  The second set of compilations require whatever engine your
+destination documents require.
+
+The \prog{latexmk} program \cite{latexmk} works like \prog{make} for \TeX{}
+projects.  It examines a \TeX{} file to find dependencies, watces for warnings
+about re-running \LaTeX, ad runs the necessary commands to get the entire
+document stable.  \prog{latexmk} is written in perl, distributed with \TeX-live,
+and actively maintained.
+
+A unix one-line command that does both of these is:
+\begin{lstlisting}[language=bash,numbers=none]
+    tex foo.dtx && latexmk 
+\end{lstlisting}
+This processes \fn{foo.dtx} and, upon success of that command, runs
+\prog{latexmk}.  Without file arguments, \prog{latexmk} looks for any \TeX{}
+files in the current working directory and makes them.  Any command-line options
+to \prog{latexmk} (e.g., \opt{-pdf} to make sure the \prog{pdftex} engine is
+chosen, \opt{-pdfxe} to ensure \prog{xelatex}, and \opt{-pdflua} to ensure
+\prog{lualatex}) will be passed when making each \TeX{} file.
+
+The process can be further automated and integrated into various \TeX{} editors.
+I have written a \fn{.latexmkrc} (configuration file for \prog{latexmk}) that
+looks for \docstrip{} files in the argument list, and when found, parses their
+log files for names of generated files to make automatically.  With this
+configuration, \lstinline[basicstyle=\ttfamily]|latexmk foo.dtx| will take care
+of all generated files in one fell swoop.
+
+Any editor that can run a program can be configured to run \prog{latexmk}.  For
+instance, I have written a \TeX{}Shop ``engine'' script that wraps around
+\prog{latexmk} so configured.  I edit the \docstrip{} and press Command-T once.
+I open one of the generated files in ``preview'' mode, which gives the PDF
+window but not the \TeX{} window (we won't be editing the generated file
+directly, so we don't need it.)  The preview window updates each time the
+underlying file is changed.
+
+I have also gotten this workflow to succeed in Visual Studio Code with the
+\LaTeX-workshop plugin.  These script files and corresponding documentation are
+in the github repository.
 
 \section{Conclusion}
 
