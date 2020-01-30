@@ -6,7 +6,7 @@
 \author{Matthew Leingang}
 \address{New York University \\ 251 Mercer Street \\ New York, NY 10012\\ USA}
 \netaddress{leingang@nyu.edu}
-\personalURL{https://cims.nyu.edu/~leingang/}
+\personalURL{www.cims.nyu.edu/~leingang/}
 %%% End of metadata %%%
 
 \usepackage{microtype}
@@ -15,6 +15,8 @@
 \usepackage{listings}
 \lstset{
     columns=flexible,
+    keepspaces=true,
+    commentstyle=\slshape,
     language=[LaTeX]TeX,
     frame=tb,
     numbers=left,
@@ -26,6 +28,7 @@
 \renewcommand{\env}[1]{\texttt{#1}}% environment name (no \begin as in original)
 \newcommand{\fn}[1]{\texttt{#1}}  % file name
 \newcommand{\opt}[1]{\texttt{#1}} % DocStrip option
+\newcommand{\prog}[1]{\textit{#1}} % program
 
 \usepackage{ifpdf}
 \ifpdf
@@ -83,11 +86,11 @@ different files in one batch, through the use of options.
 ]
     \input docstrip.tex 
     \generate{\file{foo.sty}
-              {\from{foo.dtx}{package}}}
+             {\from{foo.dtx}{package}}}
     \endbatchfile
 \end{lstlisting}
 
-\docstrip{} batches are programmed in a \TeX file as in
+\docstrip{} batches are programmed in a \TeX{} file as in
 Listing~\ref{lst-minbatch}.  The \cs{input} line loads the \docstrip{} code.
 The \cs{generate} line instructs, effectively, ``Read \fn{foo.dtx} and write
 \fn{foo.sty}, setting the \opt{package} option.''
@@ -100,11 +103,11 @@ boolean expression enclosed by angle brackets.
 
 Now putting guards at the start of every line would be cumbersome to type.  So
 guard modifiers are used to delimit blocks of code with the same guard.  Any
-expression preceded by `\verb|*|' will apply the indicated guard to every line that
-follows, until the identical expression is encountered with the `\verb|/|' modifier.
-This gives an almost \acro{HTML}-like layer to the docstrip source file, where blocks
-of code between \verb!%<*bar>! and \verb!%</bar>! will be written to any file
-generated with the \opt{bar} option.
+expression preceded by `\verb|*|' will apply the indicated guard to every line
+that follows, until the identical expression is encountered with the `\verb|/|'
+modifier.  This gives an almost \acro{HTML}-like layer to the docstrip source
+file, where blocks of code between lines starting with \verb!%<*bar>! and
+\verb!%</bar>! will be written to any file generated with the \opt{bar} option.
 
 Remarkably, a \docstrip{} batch declaration can be put \emph{at the beginning}
 of a \docstrip{} source file.  Running \TeX{} on the file will instruct \TeX{}
@@ -116,7 +119,7 @@ files.  In this way, \docstrip{} files can be configured to ``self-extract.''
 
 As a small but not quite minimal example, let's consider a \docstrip{} file
 called \fn{hw.dtx}.  The entire file can be viewed online as part of the github
-repository for this article: \url{https://github.com/leingang/tugboat-dtxvar}.
+repository for this article: \url{github.com/leingang/tugboat-dtxvar}.
 
 \subsection{Batch header}
 
@@ -194,7 +197,7 @@ environment and subsequent commentary paragraph are written to the
 The implementation of the environments \env{question}, \env{answer}, \env{hint},
 and \env{solutions} have to be set up in the preambles of the generated \LaTeX{}
 files (or in packages used by them).  But guards can be used in the preambles
-too.  In this way, we can conditionally style the document too.  
+too.  In this way, we can conditionally style the document.  
 
 For instance, I prefer that the question text be upright in the questions file
 and italicized in the answers/solutions file.  This is accomplished in
@@ -255,7 +258,7 @@ inconsistency and headache.
 In this workflow, certain \LaTeX{} booleans are defined and set, and code is
 conditionally executed depending on those booleans.  The booleans can be set by
 adding \TeX{} code on the command line as optional arguments to the executable
-(e.g., \verb|pdflatex|).  Or, a shell file can be created which sets options,
+(e.g., \prog{pdflatex}).  Or, a shell file can be created which sets options,
 then inputs a common master file.
 
 When options are set within the document, or on the command line, the
@@ -282,10 +285,11 @@ hidden in the source file defeats the purpose of a homework assignment.
 \subsection{Symlinks}
 
 In this workflow, a single \TeX{} file is created, and each variant document is
-a symbolic link to the original file with a different file name.  Editing one
-``file'' effects the contents referenced by the file and all of its symlinks.
-But the \cs{jobname} is determined by the file name, so it can be tested in
-order to conditionally execute certain code.
+a symbolic link to the original file with a different file name.  The operating
+system treats a symbolic link to a file as a different name for that file.
+Editing one of these ``files'' effects the contents referenced by the file and
+all of its symlinks.  But the \cs{jobname} is determined by the file name, so it
+can be tested in order to conditionally execute certain code.
 
 This avoids the colliding output file issue of command-line arguments, and is
 more lightweight than shell files.  A new variant just requires a new symlink.
@@ -309,7 +313,7 @@ as decide when certain files don't need to be recompiled), as we'll describe in
 the next section.  
 
 Another, more uncomfortable drawback is that \TeX{} errors are only discovered
-when the derived \TeX{} are compiled.  The line numbers reported by \TeX{} at
+when the generated \TeX{} files are compiled.  The line numbers reported by \TeX{} at
 the time of the error are different from the line numbers in the \docstrip{} file.
 So diagnosing errors needs to be done without navigating to specific line
 numbers.  Rather, the token list before the error can be used for a search string.
@@ -319,7 +323,7 @@ arise from unbalanced guard modifiers, e.g., a \verb|%<*solutions>| line with no
 closing \verb|%</solutions>|.  These are hard to isolate since \docstrip{} does
 not log its processing with much context, and the error isn't discovered until
 the end of the file is reached..  I have been able to find these through a
-combination of reversing my steps, and selectively commenting out blocks.
+combination of retracing my steps, and selectively commenting out blocks.
 
 \section{Automation}
 
