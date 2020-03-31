@@ -99,7 +99,9 @@ When generating files, \docstrip{} ignores all lines beginning only with a
 single \verb!%!.  Non-commented lines are written to all destination files.
 Lines beginning with a \emph{guard} will be written to the destination file
 depending on the options set.  Each guard begins with a \verb!%! and contains a
-boolean expression enclosed by angle brackets.
+boolean expression enclosed by angle brackets.  For example, a line beginning
+with \verb|%<bar>| will only be passed to generated files when the \opt{bar}
+option is set.
 
 Now putting guards at the start of every line would be cumbersome to type.  So
 guard modifiers are used to delimit blocks of code with the same guard.  Any
