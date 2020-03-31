@@ -317,10 +317,11 @@ as decide when certain files don't need to be recompiled), as we'll describe in
 the next section.  
 
 Another, more uncomfortable drawback is that \TeX{} errors are only discovered
-when the generated \TeX{} files are compiled.  The line numbers reported by \TeX{} at
-the time of the error are different from the line numbers in the \docstrip{} file.
-So diagnosing errors needs to be done without navigating to specific line
-numbers.  Rather, the token list before the error can be used for a search string.
+when the generated \TeX{} files are compiled.  The line numbers reported by
+\TeX{} at the time of the error are different from the line numbers in the
+\docstrip{} file.  So diagnosing errors needs to be done without navigating to
+specific line numbers.  Rather, the token list before the error can be used for
+a search string.
 
 Finally, errors in the first run of \TeX{} (when \docstrip{} is extracting) can
 arise from unbalanced guard modifiers, e.g., a \verb|%<*solutions>| line with no
