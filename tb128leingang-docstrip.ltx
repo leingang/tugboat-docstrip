@@ -1,13 +1,16 @@
-\documentclass{ltugboat}
+\documentclass[final]{ltugboat}
 %%% Start of metadata %%%
 \AtBeginDocument{
-    \title{Using \docstrip{} for Multiple Document Variants}
+    \title{Using \docstrip{} for multiple document variants}
 }
 \author{Matthew Leingang}
-\address{New York University \\ 251 Mercer Street \\ New York, NY 10012\\ USA}
-\netaddress{leingang@nyu.edu}
+\address{New York University \\ 251 Mercer Street \\ New York, NY 10012\quad USA}
+\netaddress{leingang (at) nyu dot edu}
 \personalURL{www.cims.nyu.edu/~leingang/}
 %%% End of metadata %%%
+
+\hyphenation{pre-pend-ed}
+\renewcommand{\dblfloatpagefraction}{.9}
 
 \usepackage{microtype}
 \usepackage{graphicx}
@@ -20,7 +23,9 @@
     language=[LaTeX]TeX,
     frame=tb,
     numbers=left,
+    numberstyle=\scriptsize,
     basicstyle=\small\ttfamily}
+\def\lstlistingnamestyle{\bfseries}
 
 
 \newcommand{\cls}[1]{\texttt{#1}} % class name
@@ -36,7 +41,7 @@
 \else
   \usepackage{url}
 \fi
-\newcommand{\docstrip}{\texorpdfstring{\textsf{DocStrip}}{DocStrip}}
+\newcommand{\docstrip}{\texorpdfstring{{DocStrip}}{DocStrip}} %\textsf
 
 \begin{document}
 
@@ -73,7 +78,7 @@ article I will introduce the reader to \docstrip{} and explain how I use it.
 
 \docstrip{} \cite{docstrip} was originally designed as a literate programming method.  \LaTeX{}
 package and class authors use it to write documentation for their code in the same
-file as the implementation, within commnted lines.  \docstrip{} would
+file as the implementation, within commented lines.  \docstrip{} would
 \emph{strip} out the comment lines and use them to produce \emph{doc}umentation.
 The slimmer package and class files would be installed to save compile time.  In
 subsequent versions \docstrip{} developed the ability to write lines to several
@@ -92,8 +97,8 @@ different files in one batch, through the use of options.
 
 \docstrip{} batches are programmed in a \TeX{} file as in
 Listing~\ref{lst-minbatch}.  The \cs{input} line loads the \docstrip{} code.
-The \cs{generate} line instructs, effectively, ``Read \fn{foo.dtx} and write
-\fn{foo.sty}, setting the \opt{package} option.''
+The \cs{generate} line instructs \TeX, effectively, to ``read \fn{foo.dtx} and write
+\fn{foo.sty}, setting the \opt{package} option''.
 
 When generating files, \docstrip{} ignores all lines beginning only with a
 single \verb!%!.  Non-commented lines are written to all destination files.
@@ -114,7 +119,7 @@ file, where blocks of code between lines starting with \verb!%<*bar>! and
 Remarkably, a \docstrip{} batch declaration can be put \emph{at the beginning}
 of a \docstrip{} source file.  Running \TeX{} on the file will instruct \TeX{}
 to parse the file a second time, this time writing the individual destination
-files.  In this way, \docstrip{} files can be configured to ``self-extract.''
+files.  In this way, \docstrip{} files can be configured to ``self-extract''.
 
 \section{Example: A problem set with answer template and solutions}
 \label{sec-exam}
@@ -133,28 +138,32 @@ this block is not written to \emph{any} file.
     firstline=1,lastline=11,
     float=*,
     label={lst-dtx-hdr},
-    caption={The header block of \fn{hw.dtx}
+    caption={The header block of \fn{hw.dtx},
     declaring \cs{generate} batch}
 ]{hw.dtx}
 
 We generate four files:
 
 \begin{itemize}
-    \item \fn{hw.qns.tex}, which sets the \opt{questions} option.  This document
+    \item \fn{hw.qns.tex}, which sets the option \opt{questions}.  This document
     will be the prepared questions sheet for the instructor to distribute to the
     students.
-    \item \fn{hw.ans.tex}, which sets the \opt{questions} and \opt{answers}
-    options.  This is intended to be distributed to students as a template to
+    \item \fn{hw.ans.tex}, which sets the options \opt{questions} and
+    \opt{answers}.  This is intended to be distributed to students as a
+    template to
     fill in their answers.
-    \item \fn{hw.sol.tex}, which sets the \opt{questions} and \opt{solutions}
-    options.  This document can be published once the assignment is collected
+    \item \fn{hw.sol.tex}, which sets the options \opt{questions} and
+    \opt{solutions}.
+    This can be published once the assignment is collected
     and graded.
     \item \fn{hw.bib}, which only sets the \opt{bib} option.  This is a
     \BibTeX{} file that can be included in any of the \LaTeX{} files.
 \end{itemize}
 
-Lines 12–89 of \fn{hw.dtx} are delimited with \verb|<questions>| guards and
-enclose an entire \LaTeX{} document from \verb|\documentclass{article}| to
+Lines 12–89 of \fn{hw.dtx} are delimited with the
+\verb|<questions>| guards and
+enclose an entire \LaTeX{} document from \verb|\documentclass{article}|
+through to
 \verb|\end{document}|.  Lines 90 and onward are delimited with \verb|<bib>| and
 comprise the complete \fn{hw.bib} file.
 
@@ -164,7 +173,7 @@ Listing~\ref{lst-dtx-qna} shows an excerpt of \fn{hw.dtx} that declares a
 question.   Notice that the \env{hint} environment is surrounded by a guard with
 a compound boolean expression \verb|<!answers&!solutions>|.  The effect is that
 the  \env{hint} is shown when the \opt{questions} option is selected, but
-\opt{answers} and \opt{solutions} are \emph{not} selected.  That is, only in the
+\opt{answers} and \opt{solutions} are \emph{not} selected; that is, only in the
 \fn{hw.qns.tex} file.  The resulting block that is written to the questions file
 is shown in Listing~\ref{lst-tex-qns}.
 
@@ -226,26 +235,26 @@ If you look in the full \fn{hw.dtx} file online, you'll see a few more automatic
 variations with \docstrip:
 
 \begin{itemize}
-    \item The document title is set in \fn{hw.qns.tex}.  In \fn{hw.ans.tex}, the
-    text \verb|Answers to | is prepended to the title (using the \cs{preto} command
+    \item The document title is specified in \fn{hw.qns.tex}.  In \fn{hw.ans.tex}, the
+    text `\verb|Answers to| ' is prepended to the title (using the \cs{preto} command
     from the \pkg{etoolbox} package).  In \fn{hw.sol.tex}, the phrase
-    \verb|Solutions to | is prepended.  In this way, the original title only needs
+    `\verb|Solutions to| ' is prepended.  In this way, the original title only needs
     to be put in one place.
 
     \item The document author is set differently in the different document
     variants. In \fn{hw.qns.tex} and \fn{hw.sol.tex}, the author is the
     professor.  In \fn{hw.ans.tex}, the author is set to a generic student name,
-    and a \cs{LaTeXWarning} is used to remind the student to change the generic
+    and \cs{LaTeXWarning} is used to remind the student to change the generic
     name to their own name.
 \end{itemize}
 
 \section{Comparing alternatives}
 
 The problem of ``document options'' has been encountered by users before, for
-instance on the StackExchange nextwork. 
-\cite{TSE-docopts} 
-\cite{TSE-makefile}
-\cite{SO-texclargs}
+instance on the StackExchange network
+\cite{TSE-docopts,
+TSE-makefile,
+SO-texclargs}.
 Let's consider some of the alternatives in the context of the example use case
 from Section~\ref{sec-exam}.
 
@@ -253,13 +262,13 @@ from Section~\ref{sec-exam}.
 
 In this strawman workflow, separate, nearly identical files are kept
 side-by-side.  Any correction (to a problem, for instance) requires three files
-be updated.  Further, copying a question to another assignment requires copying
+to be updated.  Further, copying a question to another assignment requires copying
 from three different files to three different files.  This setup is ripe for
 inconsistency and headache.
 
-\subsection{Option setting in pure \texorpdfstring{\TeX}{TeX}}
+\subsection{Option setting in pure \texorpdfstring{\AllTeX}{TeX}}
 
-In this workflow, certain \LaTeX{} booleans are defined and set, and code is
+In this workflow, certain \AllTeX{} booleans are defined and set, and code is
 conditionally executed depending on those booleans.  The booleans can be set by
 adding \TeX{} code on the command line as optional arguments to the executable
 (e.g., \prog{pdflatex}).  Or, a shell file can be created which sets options,
@@ -267,8 +276,8 @@ then inputs a common master file.
 
 When options are set within the document, or on the command line, the
 \cs{jobname} is the same independent of the options set.  In our homework
-example, this would mean the problems file and and solutions file would both end
-up named \fn{hw.pdf}.  Not only does this the mean that the problem set and
+example, this would mean the problems file and solutions file would both end
+up named \fn{hw.pdf}.  Not only does this mean that the problem set and
 solutions \acro{PDF}s cannot inhabit the same directory at the same time, one
 can be mistaken for another.  Imagine the poor professor distributing what he
 thought was the questions-only \acro{PDF}, only to realize that he had instead
@@ -282,7 +291,7 @@ a separate file.
 
 Also, in the context of a homework assignment, none of these methods allows
 the distribution of an answer template.  If the solutions are in the master
-\TeX{} file, and conditonally kept or discarded depending on options, they
+\TeX{} file, and conditionally kept or discarded depending on options, they
 remain in the source file no matter what.  An answer template with solutions
 hidden in the source file defeats the purpose of a homework assignment.
 
@@ -291,13 +300,13 @@ hidden in the source file defeats the purpose of a homework assignment.
 In this workflow, a single \TeX{} file is created, and each variant document is
 a symbolic link to the original file with a different file name.  The operating
 system treats a symbolic link to a file as a different name for that file.
-Editing one of these ``files'' effects the contents referenced by the file and
+Editing one of these ``files'' affects the contents referenced by the file and
 all of its symlinks.  But the \cs{jobname} is determined by the file name, so it
 can be tested in order to conditionally execute certain code.
 
 This avoids the colliding output file issue of command-line arguments, and is
 more lightweight than shell files.  A new variant just requires a new symlink.
-It has the same disadvantages of the master-plus-shell files workflow, too. Code
+It has the same disadvantages of the master-plus-shell files workflow, though. Code
 cannot be stripped out of the master file for a template, only gobbled and
 discarded.  Also, symbolic links require a certain level of comfort with the
 operating system in use.
@@ -305,7 +314,7 @@ operating system in use.
 The \docstrip{} method described here is operating system independent.  It is
 secure in that each document variant gets a distinct \cs{jobname} and output
 file name.  It is lightweight in that only one \docstrip{} file needs to be
-created for every bundle of documents needed, and no programming other than \TeX
+created for every bundle of documents needed, and no programming other than \TeX\
 is necessary.
 
 \subsection{Disadvantages of the \docstrip{} method}
@@ -335,25 +344,26 @@ combination of retracing my steps, and selectively commenting out blocks.
 To recap, this workflow requires editing a \docstrip{} file marked up as in
 Section~\ref{sec-exam}, compiling that \docstrip{} file to generate separate
 \TeX{} files, then compiling the desired \TeX{} file.  The first run can be done
-in any \TeX engine, because the batch declaration header (and \fn{docstrip.tex})
+in any \TeX\ engine, because the batch declaration header (and \fn{docstrip.tex})
 is in core \TeX{}.  The second set of compilations require whatever engine your
 destination documents require.
 
 The \prog{latexmk} program \cite{latexmk} works like \prog{make} for \TeX{}
-projects.  It examines a \TeX{} file to find dependencies, watces for warnings
-about re-running \LaTeX, ad runs the necessary commands to get the entire
-document stable.  \prog{latexmk} is written in perl, distributed with \TeX-live,
+projects.  It examines a \TeX{} file to find dependencies, watches for warnings
+about re-running \LaTeX, and runs the necessary commands to get the entire
+document stable.  \prog{latexmk} is written in Perl, distributed with
+\TeX\ Live and MiK\TeX,
 and actively maintained.
 
-A unix one-line command that does both of these is:
+A one-line Unix command that does both of these is:
 \begin{lstlisting}[language=bash,numbers=none]
     tex foo.dtx && latexmk 
 \end{lstlisting}
 This processes \fn{foo.dtx} and, upon success of that command, runs
 \prog{latexmk}.  Without file arguments, \prog{latexmk} looks for any \TeX{}
 files in the current working directory and makes them.  Any command-line options
-to \prog{latexmk} (e.g., \opt{-pdf} to make sure the \prog{pdftex} engine is
-chosen, \opt{-pdfxe} to ensure \prog{xelatex}, and \opt{-pdflua} to ensure
+to \prog{latexmk} (notably, \opt{-pdf} to make sure the \prog{pdftex} engine is
+chosen, \opt{-pdfxe} to ensure \prog{xelatex}, or \opt{-pdflua} to ensure
 \prog{lualatex}) will be passed when making each \TeX{} file.
 
 The process can be further automated and integrated into various \TeX{} editors.
@@ -366,23 +376,28 @@ of all generated files in one fell swoop.
 Any editor that can run a program can be configured to run \prog{latexmk}.  For
 instance, I have written a \TeX{}Shop ``engine'' script that wraps around
 \prog{latexmk} so configured.  I edit the \docstrip{} and press Command-T once.
-I open one of the generated files in ``preview'' mode, which gives the PDF
+I open one of the generated files in ``preview'' mode, which gives the \PDF\
 window but not the \TeX{} window (we won't be editing the generated file
-directly, so we don't need it.)  The preview window updates each time the
+directly, so we don't need it).  The preview window updates each time the
 underlying file is changed.
 
 I have also gotten this workflow to succeed in Visual Studio Code with the
 \LaTeX{} Workshop \cite{vscode-latex-workshop}  These script files and
 corresponding documentation are in the github repository.
 
+\smallskip
 \section{Conclusion}
 
 I will continue to maintain and update the github repository referenced above.
 If you would like to try this method, and find that additional documentation
 would be useful, I will be happy to include it.
 
+\smallskip
+\SetBibJustification{\raggedright\let\url=\tbsurl}
 \bibliographystyle{tugboat}
 \bibliography{dtxvar}
 
+\smallskip
 \makesignature
+\vfilneg
 \end{document}
