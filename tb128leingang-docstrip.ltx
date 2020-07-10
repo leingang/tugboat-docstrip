@@ -330,6 +330,12 @@ them must be compiled.  A bit of programming can automate this process (as well
 as decide when certain files don't need to be recompiled), as we'll describe in
 the next section.  
 
+Not every \TeX{} editor can be used for \docstrip files.  In particular, WYSIYWYG 
+or WYSIWYM editors such as LyX and TeXmacs expect the source file to be a regular
+\AllTeX file.  But any editor designed to operate on text files can be configured
+for \docstrip.  Some of the most popular \TeX{} editors (for example, \TeX Shop,
+\TeX works, \TeX studio, AUC\TeX) support \docstrip{} out of the box, as does Visual Studio Code.
+
 Another, more uncomfortable drawback is that \TeX{} errors are only discovered
 when the generated \TeX{} files are compiled.  The line numbers reported by
 \TeX{} at the time of the error are different from the line numbers in the
