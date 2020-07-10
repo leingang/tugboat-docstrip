@@ -126,7 +126,7 @@ files.  In this way, \docstrip{} files can be configured to ``self-extract''.
 
 As a small but not quite minimal example, let's consider a \docstrip{} file
 called \fn{hw.dtx}.  The entire file can be viewed online as part of the github
-repository for this article: \url{github.com/leingang/tugboat-dtxvar}.
+repository for this article: \url{github.com/leingang/tugboat-docstrip}.
 
 \subsection{Batch header}
 
@@ -272,20 +272,18 @@ adding \TeX{} code on the command line as optional arguments to the executable
 (e.g., \prog{pdflatex}).  Or, a shell file can be created which sets options,
 then inputs a common master file.
 
-When options are set within the document, or on the command line, the
-\cs{jobname} is the same independent of the options set.  In our homework
-example, this would mean the problems file and solutions file would both end
-up named \fn{hw.pdf}.  Not only does this mean that the problem set and
-solutions \acro{PDF}s cannot inhabit the same directory at the same time, one
-can be mistaken for another.  Imagine the poor professor distributing what he
-thought was the questions-only \acro{PDF}, only to realize that he had instead
-shared all the solutions!
+When options are set within the document, the \cs{jobname} is the same
+independent of the options set.  In our homework example, this would mean the
+problems file and solutions file would both end up named \fn{hw.pdf}.  Not only
+does this mean that the problem set and solutions \acro{PDF}s cannot inhabit the
+same directory at the same time, one can be mistaken for another.  Imagine the
+poor professor distributing what he thought was the questions-only \acro{PDF},
+only to realize that he had instead shared all the solutions!
 
 With shell files, the \cs{jobname} is different for each document variant,
-avoiding the possibility of such a mistake.  But each bundle of documents
-requires now creating several files: one master, and one shell file for each
-variant.  A Makefile could automate creation of the shell files, but it's still
-a separate file.
+avoiding the possibility of such a mistake.  The \cs{jobname} can also be set on
+the command line when invoking \AllTeX{}.  But either way, extra files are
+needed to support this workflow.
 
 Also, in the context of a homework assignment, none of these methods allows
 the distribution of an answer template.  If the solutions are in the master
