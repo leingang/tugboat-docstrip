@@ -107,7 +107,9 @@ Lines beginning with a \emph{guard} will be written to the destination file
 depending on the options set.  Each guard begins with a \verb!%! and contains a
 boolean expression enclosed by angle brackets.  For example, a line beginning
 with \verb|%<bar>| will only be passed to generated files when the \opt{bar}
-option is set.
+option is set.  \docstrip{} can generate more than \TeX{} files, too; for example,
+\BibTeX{} files, data files, and shell scripts can be embedded in the master file
+and extracted.
 
 Now putting guards at the start of every line would be cumbersome to type.  So
 guard modifiers are used to delimit blocks of code with the same guard.  Any
@@ -153,6 +155,7 @@ We generate four files:
     \item \fn{hw.qns.tex}, which sets the option \opt{questions}.  This document
     will be the prepared questions sheet for the instructor to distribute to the
     students.
+
     \item \fn{hw.ans.tex}, which sets the options \opt{questions} and
     \opt{answers}.  This file will be distributed to students as \LaTeX{} source,
     so that they can fill in their answers without having to create their
@@ -162,8 +165,11 @@ We generate four files:
     \opt{solutions}.
     This can be published once the assignment is collected
     and graded.
+
     \item \fn{hw.bib}, which only sets the \opt{bib} option.  This is a
-    \BibTeX{} file that can be included in any of the \LaTeX{} files.
+    \BibTeX{} file that can be included in any of the \LaTeX{} files.  If the assignment
+    needs to be copied with only a few changes like the year and the due date,
+    only one file must be copied from the old directory to the new.
 \end{itemize}
 
 Lines 12–89 of \fn{hw.dtx} are delimited with the \verb|<questions>| guards and
