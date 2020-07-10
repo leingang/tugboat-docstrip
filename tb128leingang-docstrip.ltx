@@ -304,8 +304,8 @@ depending on options, they still remain the source.
 \subsection{Symlinks}
 
 In this workflow, a single \TeX{} file is created, and each variant document is
-a symbolic link to the original file with a different file name.  The operating
-system treats a symbolic link to a file as a different name for that file.
+a symbolic link (or symlink) to the original file with a different file name.  
+The operating system treats a symlink to a file as a different name for that file.
 Editing one of these ``files'' affects the contents referenced by the file and
 all of its symlinks.  But the \cs{jobname} is determined by the file name, so it
 can be tested in order to conditionally execute certain code.
@@ -314,8 +314,7 @@ This avoids the colliding output file issue of command-line arguments, and is
 more lightweight than shell files.  A new variant just requires a new symlink.
 It has the same disadvantages of the master-plus-shell files workflow, though. Code
 cannot be stripped out of the master file for a template, only gobbled and
-discarded.  Also, symbolic links require a certain level of comfort with the
-operating system in use.
+discarded.  Not every operating system and file system has this capability, either.
 
 The \docstrip{} method described here is operating system independent.  It is
 secure in that each document variant gets a distinct \cs{jobname} and output
