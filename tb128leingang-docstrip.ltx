@@ -154,9 +154,10 @@ We generate four files:
     will be the prepared questions sheet for the instructor to distribute to the
     students.
     \item \fn{hw.ans.tex}, which sets the options \opt{questions} and
-    \opt{answers}.  This is intended to be distributed to students as a
-    template to
-    fill in their answers.
+    \opt{answers}.  This file will be distributed to students as \LaTeX{} source,
+    so that they can fill in their answers without having to create their
+    own file from scratch.
+    
     \item \fn{hw.sol.tex}, which sets the options \opt{questions} and
     \opt{solutions}.
     This can be published once the assignment is collected
@@ -290,11 +291,10 @@ avoiding the possibility of such a mistake.  The \cs{jobname} can also be set on
 the command line when invoking \AllTeX{}.  But either way, extra files are
 needed to support this workflow.
 
-Also, in the context of a homework assignment, none of these methods allows
-the distribution of an answer template.  If the solutions are in the master
-\TeX{} file, and conditionally kept or discarded depending on options, they
-remain in the source file no matter what.  An answer template with solutions
-hidden in the source file defeats the purpose of a homework assignment.
+Also, in the context of a homework assignment, none of these methods allow
+the distribution of an answer template as a \LaTeX{} source file.  
+If the solutions are in the master \TeX{} file, and conditionally typeset 
+depending on options, they still remain the source.
 
 \subsection{Symlinks}
 
