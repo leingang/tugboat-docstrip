@@ -83,7 +83,7 @@ file as the implementation, within commented lines.  \docstrip{} would
 \emph{strip} out the comment lines and use them to produce \emph{doc}umentation.
 The slimmer package and class files would be installed to save compile time.  In
 subsequent versions \docstrip{} developed the ability to write lines to several
-different files in one batch, through the use of options.
+different files in one batch, through the use of \emph{options}.
 
 \begin{lstlisting}[float,
     numbers=none,
@@ -117,10 +117,14 @@ modifier.  This gives an almost \acro{HTML}-like layer to the \docstrip{} source
 file, where blocks of code between lines starting with \verb!%<*bar>! and
 \verb!%</bar>! will be written to any file generated with the \opt{bar} option.
 
-Remarkably, a \docstrip{} batch declaration can be put \emph{at the beginning}
-of a \docstrip{} source file.  Running \TeX{} on the file will instruct \TeX{}
-to parse the file a second time, this time writing the individual destination
-files.  In this way, \docstrip{} files can be configured to ``self-extract''.
+A \docstrip{} batch declaration such as in Listing~\ref{lst-minbatch}
+often resides in a separate file.  If this code were in \fn{foo.ins}, running 
+\TeX{} on \fn{foo.ins} would extract \fn{foo.sty} from \fn{foo.dtx} and quit. 
+But \docstrip{} files can be also be configured to ``self-extract'' by putting
+the batch declaration at the beginning of the file.
+In this configuration, running \TeX{} on \fn{foo.dtx} will instruct \TeX{}
+to parse \fn{foo.dtx} a second time, this time writing \fn{foo.sty}.
+Thus, the document content and extraction instructions can reside in a single file.
 
 \section{Example: A problem set with answer template and solutions}
 \label{sec-exam}
