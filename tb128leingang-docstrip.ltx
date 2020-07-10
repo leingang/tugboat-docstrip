@@ -60,9 +60,8 @@ materials in several different forms.  For example:
 \begin{itemize}
     \item A single class day's lesson might consist of lecture slides in the
     \cls{beamer} class, a handout of the same slides printed 2–3 on a page for
-    student notes, my own lecture notes in \cls{beamer} with the
-    \pkg{beamerarticle} package loaded, a worksheet for distribution, and
-    solutions to the worksheet.
+    student notes, my own lecture notes as a manuscript, a worksheet for in-class activity, 
+    and solutions to that worksheet.
 
     \item A single week's homework assignment might consist of problem
     statements, with hints and reading notes, a \LaTeX{} template for students
@@ -70,9 +69,11 @@ materials in several different forms.  For example:
     published after the assignment has been graded.
 \end{itemize}
 
-Over the years I have developed a workflow for writing these ``bundles'' of
-documents in the same file, using the \LaTeX{} \docstrip{} utility.  In this
-article I will introduce the reader to \docstrip{} and explain how I use it.
+Over the years I have developed a workflow for maintaining these ``bundles'' of
+documents in the same file, using the \LaTeX{} \docstrip{} utility.  This workflow 
+allows me to programmatically vary the content and formatting, and avoids external scripts
+or filesystem hacks. In this article I will introduce the reader to \docstrip{} 
+and explain how I use it.
 
 \section{The \docstrip{} utility}
 
