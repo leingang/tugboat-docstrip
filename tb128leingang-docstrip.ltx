@@ -316,6 +316,13 @@ It has the same disadvantages of the master-plus-shell files workflow, though. C
 cannot be stripped out of the master file for a template, only gobbled and
 discarded.  Not every operating system and file system has this capability, either.
 
+\subsection{Other preprocessors}
+
+\docstrip{} functions as a \emph{preprocessor}---it converts one source file to
+another (or several others).  There are other tools for this job, among them GPP and m4.  
+Using another program requires another installing,  learning, and maintaining 
+another program, whereas \docstrip{} is available wherever \TeX{} is.
+
 The \docstrip{} method described here is operating system independent.  It is
 secure in that each document variant gets a distinct \cs{jobname} and output
 file name.  It is lightweight in that only one \docstrip{} file needs to be
