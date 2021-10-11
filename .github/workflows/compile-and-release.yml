@@ -14,6 +14,7 @@ jobs:
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v2
         with:
+          pre_compile: tex hw.dtx
           root_file: tb128leingang-docstrip.ltx
 
       - name: Create Release
