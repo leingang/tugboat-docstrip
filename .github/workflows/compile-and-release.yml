@@ -37,4 +37,5 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
           asset_path: ./tb128leingang-docstrip.pdf
           asset_name: tb128leingang-docstrip.pdf
-          asset_content_type: pdf
+          asset_content_type: application/pdf
+          asset_content_disposition: inline
